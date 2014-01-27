@@ -292,10 +292,17 @@ function ResourceView(element, calendar, viewName) {
 
 		for (row=0; row<rowCnt; row++) {
 			id = resources[row]['id'];
-			resourceName = resources[row]['name'];
-			
-			html += "<tr class='fc-resourcerow-" + id + "' data-resource='" + id + "'>" +
-			"<td class='fc-resourceName'>" + resourceName + "</td>";
+			var resourceName = resources[row]['name'];
+			var resourceHref = resources[row]['href'];
+
+			html += "<tr class='fc-resourcerow-" + id + "' data-resource='" + id + "'>";
+
+			if (resourceHref) {
+				html += "<td class='fc-resourceName'>" +
+					"<a href='" + resourceHref + "'>" + resourceName + "</a></td>";
+			} else {
+				html += "<td class='fc-resourceName'>" + resourceName + "</td>";
+			}
 
 			for (col=0; col<colCnt; col++) {
 				date = indexDate(col);
