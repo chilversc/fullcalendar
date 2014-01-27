@@ -294,7 +294,7 @@ function ResourceView(element, calendar, viewName) {
 			id = resources[row]['id'];
 			resourceName = resources[row]['name'];
 			
-			html += "<tr class='fc-resourcerow-" + id + "'>" + 
+			html += "<tr class='fc-resourcerow-" + id + "' data-resource='" + id + "'>" +
 			"<td class='fc-resourceName'>" + resourceName + "</td>";
 
 			for (col=0; col<colCnt; col++) {
