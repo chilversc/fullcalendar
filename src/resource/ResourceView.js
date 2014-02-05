@@ -264,8 +264,8 @@ function ResourceView(element, calendar, viewName) {
 		for (col=0; col<colCnt; col++) {
 			date = indexDate(col);
 			html +=
-				"<th class='" + headerClass + " fc-id " + date.getTime() + 
-					(date.getDay() === 0 || date.getDay() === 6 ? 'fc-weekend' : '') +
+				"<th class='" + headerClass +
+					(date.getDay() === 0 || date.getDay() === 6 ? ' fc-weekend' : '') +
 				"'>" +
 				(showWeekNumbers && (viewName === 'resourceNextWeeks' || viewName === 'resourceMonth') && 
 					date.getDay() === 1 ? "#" + formatDate(date, weekNumberFormat) + "<br>" : "") + 
@@ -324,7 +324,7 @@ function ResourceView(element, calendar, viewName) {
 		var today = clearTime(new Date());
 		var html = '';
 		var classNames = [
-			'fc-day fc-id' + date.getTime(),
+			'fc-day',
 			contentClass
 		];
 
