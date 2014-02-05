@@ -36,8 +36,8 @@ setDefaults({
 
 function ResourceView(element, calendar, viewName) {
 	var t = this;
-	
-	
+
+
 	// exports
 	t.renderBasic = renderBasic;
 	t.setHeight = setHeight;
@@ -72,7 +72,7 @@ function ResourceView(element, calendar, viewName) {
 	t.datePositionLeft = datePositionLeft;
 	t.isResourceEditable = isResourceEditable;
 
-	
+
 	// imports
 	View.call(t, element, calendar, viewName);
 	OverlayManager.call(t);
@@ -85,7 +85,7 @@ function ResourceView(element, calendar, viewName) {
 	var clearOverlays = t.clearOverlays;
 	var formatDate = calendar.formatDate;
 	var getResources = t.getResources;
-	
+
 	// locals
 	var table;
 	var head;
@@ -96,34 +96,34 @@ function ResourceView(element, calendar, viewName) {
 	var bodyFirstCells;
 	var bodyCellTopInners;
 	var daySegmentContainer;
-	
+
 	var viewWidth;
 	var viewHeight;
 	var colWidth;
-	
+
 	var rowCnt, colCnt, getResources;
 	var coordinateGrid;
 	var hoverListener;
 	var colPositions;
 	var colContentPositions;
-	
+
 	var rtl, dis, dit;
 	var firstDay;
 	var nwe;
 	var tm;
 	var colFormat;
-	
+
 	var snapMinutes;
 	var snapRatio; // ratio of number of "selection" slots to normal slots. (ex: 1, 2, 4)
 	var snapWidth; // holds the pixel width of a snap
-	
+
 	/* Rendering
 	------------------------------------------------------------*/
-	
-	
+
+
 	disableTextSelection(element.addClass('fc-grid'));
-	
-	
+
+
 	function renderBasic(_rowCnt, _colCnt, _showNumbers) {
 		rowCnt = _rowCnt;
 		colCnt = _colCnt;
@@ -136,8 +136,8 @@ function ResourceView(element, calendar, viewName) {
 
 		buildTable();
 	}
-	
-	
+
+
 	function updateOptions() {
 		tm = opt('theme') ? 'ui' : 'fc';
 		colFormat = opt('columnFormat');
@@ -151,7 +151,7 @@ function ResourceView(element, calendar, viewName) {
 		else {
 			weekNumberFormat = "W";
 		}
-		
+
 		if (rtl) {
 			dis = -1;
 			dit = colCnt - 1;
@@ -164,15 +164,15 @@ function ResourceView(element, calendar, viewName) {
 
 		snapMinutes = opt('snapMinutes') || opt('slotMinutes');
 	}
-	
-	
+
+
 	function buildEventContainer() {
 		daySegmentContainer =
 			$("<div class='fc-event-container' style='position:absolute;z-index:8;top:0;left:0'/>")
 				.appendTo(element);
 	}
-	
-	
+
+
 	function buildTable() {
 		var html = buildTableHTML();
 		var date;
@@ -189,12 +189,12 @@ function ResourceView(element, calendar, viewName) {
 		bodyRows = body.find('tr');
 		bodyCells = body.find('td:not(td.fc-resourceName)');
 		bodyFirstCells = bodyRows.find('td:first-child:not("fc-resourceName")');
-		
+
 		// trigger resourceRender callback now when the skeleton is ready
 		body.find('td.fc-resourceName').each(function(i, resourceElement) {
 			trigger('resourceRender', resources[i], resourceElement, viewName);
 		});
-		
+
 		firstRowCellInners = bodyRows.eq(0).find('.fc-day > div');
 		firstRowCellContentInners = bodyRows.eq(0).find('.fc-day-content > div');
 
@@ -206,7 +206,7 @@ function ResourceView(element, calendar, viewName) {
 			.end()
 			.filter(':last-child')
 			.addClass('fc-last');
-		
+
 		// marks first+last td's
 		bodyRows.children()
 			.removeClass('fc-first fc-last')
@@ -215,7 +215,7 @@ function ResourceView(element, calendar, viewName) {
 			.end()
 			.filter(':last-child')
 			.addClass('fc-last');
-			
+
 		bodyRows.eq(0).addClass('fc-first');
 		bodyRows.filter(':last').addClass('fc-last');
 
@@ -226,8 +226,8 @@ function ResourceView(element, calendar, viewName) {
 
 		dayBind(bodyCells);
 	}
-	
-	
+
+
 	/* HTML Building
 	-----------------------------------------------------------*/
 
@@ -249,26 +249,27 @@ function ResourceView(element, calendar, viewName) {
 		var col;
 		var date;
 		var weekTitle;
-		
+
 		if (rtl) {
 			weekTitle = formatDate(indexDate(0), weekNumberFormat) + weekNumberTitle;
 		} else {
 			weekTitle = weekNumberTitle + formatDate(indexDate(0), weekNumberFormat);
 		}
-		
+
 		html +=
 			"<thead>" +
 			"<tr><th class='fc-resourceName'>" +
-			(showWeekNumbers && (viewName === 'resourceDay' || viewName === 'resourceWeek') ? weekTitle : "&nbsp;") + 
+			(showWeekNumbers && (viewName === 'resourceDay' || viewName === 'resourceWeek') ? weekTitle : "&nbsp;") +
 			"</th>";
 		for (col=0; col<colCnt; col++) {
 			date = indexDate(col);
 			html +=
 				"<th class='" + headerClass +
+					' fc-' + dayIDs[date.getDay()] +
 					(date.getDay() === 0 || date.getDay() === 6 ? ' fc-weekend' : '') +
 				"' data-date='" + formatDate(date, 'yyyy-MM-dd') + "'>" +
 				(showWeekNumbers && (viewName === 'resourceNextWeeks' || viewName === 'resourceMonth') &&
-					date.getDay() === 1 ? "#" + formatDate(date, weekNumberFormat) + "<br>" : "") + 
+					date.getDay() === 1 ? "#" + formatDate(date, weekNumberFormat) + "<br>" : "") +
 				htmlEscape(formatDate(date, colFormat)) +
 				"</th>";
 		}
@@ -325,6 +326,7 @@ function ResourceView(element, calendar, viewName) {
 		var html = '';
 		var classNames = [
 			'fc-day',
+			'fc-' + dayIDs[date.getDay()],
 			contentClass
 		];
 
@@ -345,9 +347,9 @@ function ResourceView(element, calendar, viewName) {
 		}
 
 		if (date.getDay() == 0 || date.getDay() == 6) {
-			classNames.push('fc-weekend-column');	
+			classNames.push('fc-weekend-column');
 		}
-		
+
 		html +=
 			"<td" +
 			" class='" + classNames.join(' ') + "'" +
@@ -364,26 +366,26 @@ function ResourceView(element, calendar, viewName) {
 
 		return html;
 	}
-	
-	
+
+
 	/* Dimensions
 	-----------------------------------------------------------*/
-	
+
 	function setHeight(height) {
 		viewHeight = height;
-		
+
 		var bodyHeight = viewHeight - head.height();
 		var rowHeight;
 		var rowHeightLast;
 		var cell;
-			
+
 		if (opt('weekMode') == 'variable') {
 			rowHeight = rowHeightLast = Math.floor(bodyHeight / (rowCnt==1 ? 2 : 6));
 		}else{
 			rowHeight = Math.floor(bodyHeight / rowCnt);
 			rowHeightLast = bodyHeight - rowHeight * (rowCnt-1);
 		}
-		
+
 		bodyFirstCells.each(function(i, _cell) {
 			if (i < rowCnt) {
 				cell = $(_cell);
@@ -393,10 +395,10 @@ function ResourceView(element, calendar, viewName) {
 				);
 			}
 		});
-		
+
 	}
-	
-	
+
+
 	function setWidth(width) {
 		viewWidth = width;
 		// minus resourceName width
@@ -404,27 +406,27 @@ function ResourceView(element, calendar, viewName) {
 		colContentPositions.clear();
 		colWidth = Math.floor(viewWidth / colCnt);
 		setOuterWidth(headCells, colWidth);
-		
+
 		snapRatio = 1;
 		if(viewName === 'resourceDay') {
 			snapRatio = opt('slotMinutes') / snapMinutes;
 		}
-		
+
 		snapWidth = colWidth / snapRatio;
 	}
-	
-	
-	
+
+
+
 	/* Day clicking and binding
 	-----------------------------------------------------------*/
-	
-	
+
+
 	function dayBind(days) {
 		days.click(dayClick)
 			.mousedown(daySelectionMousedown);
 	}
-	
-	
+
+
 	function dayClick(ev) {
 		if (!opt('selectable')) { // if selectable, SelectionManager will worry about dayClick
 			var index = parseInt(this.className.match(/fc\-day(\d+)/)[1]); // TODO: maybe use .data
@@ -432,13 +434,13 @@ function ResourceView(element, calendar, viewName) {
 			trigger('dayClick', this, date, true, ev);
 		}
 	}
-	
-	
-	
+
+
+
 	/* Semi-transparent Overlay Helpers
 	------------------------------------------------------*/
-	
-	
+
+
 	function renderDayOverlay(overlayStart, overlayEnd, refreshCoordinateGrid, overlayRow) { // overlayEnd is exclusive
 		if (refreshCoordinateGrid) {
 			coordinateGrid.build();
@@ -470,23 +472,23 @@ function ResourceView(element, calendar, viewName) {
 					colStart = dayDiff(stretchStart, rowStart);
 					colEnd = dayDiff(stretchEnd, rowStart);
 				}
-				
+
 				if(!opt('weekends')) {
 					// Drop weekends off
-					var weekendSumColStart=0, weekendTestDate;				
+					var weekendSumColStart=0, weekendTestDate;
 					for(var i=0; i<=colStart; i++) {
 						weekendTestDate = addDays(cloneDate(t.visStart), i);
-						
+
 						if(weekendTestDate.getDay() == 0 || weekendTestDate.getDay() == 6) {
 							weekendSumColStart++;
 						}
 					}
 					colStart -= weekendSumColStart;
-					
+
 					var weekendSumColEnd=0
 					for(i=0; i<=colEnd-1; i++) {
 						weekendTestDate = addDays(cloneDate(t.visStart), i);
-						
+
 						if(weekendTestDate.getDay() == 0 || weekendTestDate.getDay() == 6) {
 							weekendSumColEnd++;
 						}
@@ -494,30 +496,30 @@ function ResourceView(element, calendar, viewName) {
 					colEnd -= weekendSumColEnd;
 				}
 			}
-			
+
 			dayBind(
 				renderCellOverlay(overlayRow, colStart, overlayRow, colEnd-1)
 			);
 		}
 	}
-	
-	
+
+
 	function renderCellOverlay(row0, col0, row1, col1) { // row1,col1 is inclusive
 		var rect = coordinateGrid.rect(row0, Math.round(col0), row1, Math.round(col1), element);
 		return renderOverlay(rect, element);
 	}
-	
-	
-	
+
+
+
 	/* Selection
 	-----------------------------------------------------------------------*/
-	
-	
+
+
 	function defaultSelectionEnd(startDate, allDay) {
 		return cloneDate(startDate);
 	}
-	
-	
+
+
 	function renderSelection(startDate, endDate, allDay, overlayRow) {
 		if (viewName == 'resourceDay') {
 			renderDayOverlay(startDate, addMinutes(cloneDate(endDate), opt('slotMinutes')), true, overlayRow); // rebuild every time???
@@ -526,25 +528,25 @@ function ResourceView(element, calendar, viewName) {
 			renderDayOverlay(startDate, addDays(cloneDate(endDate), 1), true, overlayRow); // rebuild every time???
 		}
 	}
-	
-	
+
+
 	function clearSelection() {
 		clearOverlays();
 	}
-	
-	
+
+
 	function reportDayClick(date, allDay, ev, resource) {
 		var col = dateCol(date);
 		var _element = bodyCells[col];
 		trigger('dayClick', _element, date, allDay, ev, resource);
 	}
-	
-	
-	
+
+
+
 	/* External Dragging
 	-----------------------------------------------------------------------*/
-	
-	
+
+
 	function dragStart(_dragElement, ev, ui) {
 		hoverListener.start(function(cell) {
 			clearOverlays();
@@ -553,8 +555,8 @@ function ResourceView(element, calendar, viewName) {
 			}
 		}, ev);
 	}
-	
-	
+
+
 	function dragStop(_dragElement, ev, ui) {
 		var cell = hoverListener.stop();
 		clearOverlays();
@@ -564,18 +566,18 @@ function ResourceView(element, calendar, viewName) {
 			trigger('drop', _dragElement, d, true, ev, ui, newResource);
 		}
 	}
-	
-	
-	
+
+
+
 	/* Utilities
 	--------------------------------------------------------*/
-	
-	
+
+
 	function defaultEventEnd(event) {
 		return cloneDate(event.start);
 	}
-	
-	
+
+
 	coordinateGrid = new CoordinateGrid(function(rows, cols) {
 		var e, n, p;
 		headCells.each(function(i, _e) {
@@ -602,27 +604,27 @@ function ResourceView(element, calendar, viewName) {
 
 		p[1] = n + e.outerHeight();
 	});
-	
-	
+
+
 	hoverListener = new HoverListener(coordinateGrid);
-	
+
 	colPositions = new HorizontalPositionCache(function(col) {
 		return firstRowCellInners.eq(col);
 	});
-	
+
 	colContentPositions = new HorizontalPositionCache(function(col) {
 		return firstRowCellContentInners.eq(col);
 	});
-	
+
 	function colContentLeft(col) {
 		return colContentPositions.left(col);
 	}
-	
-	
+
+
 	function colContentRight(col) {
 		return colContentPositions.right(col);
 	}
-	
+
 	function dateCell(date) {
 		var col,year,month,day,cmpDate,cmpYear,cmpMonth,cmpDay, weekends = opt('weekends');
 		if (viewName == 'resourceDay') {
@@ -641,16 +643,16 @@ function ResourceView(element, calendar, viewName) {
 	function colRight(col) {
 		return colPositions.right(col);
 	}
-	
+
 	// Left of the date (x pos)
 	function datePositionLeft(eventDate) {
 		var positionFunc = (viewName === 'resourceDay') ? _timePositionLeft : _dayPositionLeft;
 		return positionFunc(eventDate);
 	}
-	
+
 	function _timePositionLeft(eventDate) {
 		var date = roundToClosestSnapMinute(cloneDate(eventDate));
-		
+
 		// get left offset
 		var bounds = allDayBounds();
 		var minLeft = bounds.left;
@@ -661,11 +663,11 @@ function ResourceView(element, calendar, viewName) {
 
 		return left;
 	}
-	
-	
+
+
 	function _dayPositionLeft(eventDate) {
 		var date = clearTime(cloneDate(eventDate)); // set time to midnight
-		
+
 		// get left offset
 		var bounds = allDayBounds();
 		var minLeft = bounds.left;
@@ -676,8 +678,8 @@ function ResourceView(element, calendar, viewName) {
 
 		return left;
 	}
-	
-	
+
+
 	function dateCol(date) {
 		var col;
 		if (viewName === 'resourceDay') {
@@ -688,25 +690,25 @@ function ResourceView(element, calendar, viewName) {
 		}
 		return col;
 	}
-	
-	
+
+
 	function cellDate(cell) {
 		return _cellDate(cell.col);
 	}
-	
-	
+
+
 	function _cellDate(col) {
 		if (viewName == 'resourceDay') {
 			return addMinutes(cloneDate(t.visStart), col*opt('slotMinutes'));
 		}
-		else {	
+		else {
 			if (!opt('weekends')) {
 				// no weekends
 				var dateTest, i;
 
 				for (i=0; i <= col; i++) {
 					dateTest = addDays(cloneDate(t.visStart), i);
-					
+
 					if (dateTest.getDay() == 6 || dateTest.getDay() == 0) {
 						// this sunday or saturday
 						col++;
@@ -717,40 +719,40 @@ function ResourceView(element, calendar, viewName) {
 			return addDays(cloneDate(t.visStart), col, true);
 		}
 	}
-	
-	
+
+
 	function roundToClosestSnapMinute(date) {
 		var rounded = cloneDate(date);
 		var hours = rounded.getHours();
 		var minutes = rounded.getMinutes();
 		var slot, diff, minDiff, closestMinute;
-		
+
 		// round minutes to closest snapminute
 		for ( var i = 0 ; i <= 60/snapRatio; i++) {
 			slot = i*snapMinutes;
 
 			diff = Math.abs(slot-minutes);
-			
+
 			if (diff <= minDiff || i == 0) {
 				minDiff = diff;
 				closestMinute = slot;
 			}
-			
+
 			if(closestMinute == 60) {
 				hours++;
 				closestMinute = 0;
 			}
-		}		
+		}
 		minutes = closestMinute;
 		rounded.setMinutes(minutes);
 		rounded.setHours(hours);
 		return rounded;
 	}
-	
+
 	function roundToClosestMidnight(date) {
 		var rounded = cloneDate(date);
 		var hours = rounded.getHours();
-		
+
 		if (hours > 11) {
 			// round to next midnight
 			addDays(rounded, 1, false);
@@ -759,40 +761,40 @@ function ResourceView(element, calendar, viewName) {
 			// round to today midnight
 			addDays(rounded, 0, false);
 		}
-		
+
 		return rounded;
 	}
-	
+
 	function indexDate(index) {
 		return _cellDate(index%colCnt);
 	}
-	
+
 	function dayOfWeekCol(dayOfWeek) {
 		return ((dayOfWeek - Math.max(firstDay, nwe) + colCnt) % colCnt) * dis + dit;
 	}
-	
+
 	function timeOfDayCol(datetime) {
 		var hours = datetime.getHours();
 		var minutes = datetime.getMinutes();
 		var slotMinutes = opt('slotMinutes');
 		var slot, diff, minDiff, closestMinute;
-		
+
 		// round minutes to closest minuteslot
 		for ( var i = 0 ; i <= 60/slotMinutes; i++) {
 			slot = i*slotMinutes;
 
 			diff = Math.abs(slot-minutes);
-			
+
 			if (diff <= minDiff || i == 0) {
 				minDiff = diff;
 				closestMinute = slot;
 			}
-			
+
 			if(closestMinute == 60) {
 				hours++;
 				closestMinute = 0;
 			}
-		}		
+		}
 		minutes = closestMinute;
 
 		for ( var i = 0; i < colCnt; i++) {
@@ -804,20 +806,20 @@ function ResourceView(element, calendar, viewName) {
 		// not in range, return max
 		return colCnt;
 	}
-	
-	
+
+
 	function allDayRow(i) {
 		return bodyRows.eq(i);
 	}
-	
-	
+
+
 	function allDayBounds() {
 		return {
 			left: $(head).find('th.fc-resourceName').width(),
 			right: $(head).width()
 		};
 	}
-	
+
 	function reportSelection(startDate, endDate, allDay, ev, resource) {
 		if (typeof resource == 'object' && resource.readonly === true) {
 			return false;
@@ -826,18 +828,18 @@ function ResourceView(element, calendar, viewName) {
 		selected = true;
 		trigger('select', null, startDate, endDate, allDay, ev, '', resource);
 	}
-	
-	function isResourceEditable(resourceId) {		
+
+	function isResourceEditable(resourceId) {
 		var resources = getResources; // this caches resources, so don't worry about loading times...
 		$(resources).each(function(i, resource) {
 			if (resource.id == resourceId && resource.readonly) {
 				return false;
-			} 
+			}
 		});
 		return true;
 	}
-	
-	
+
+
 	// Some changes from selectionManager daySelectionMousedown. Mainly because resourceDay view and resource readonly setting
 	function daySelectionMousedown(ev) {
 		var cellDate = t.cellDate;
@@ -848,7 +850,7 @@ function ResourceView(element, calendar, viewName) {
 		var row;
 		var resources = t.getResources || [];
 		var resourceRO;
-		
+
 		if (ev.which == 1 && opt('selectable')) { // which==1 means left mouse button
 			unselect(ev);
 			var _mousedownElement = this;
