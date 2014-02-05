@@ -266,8 +266,8 @@ function ResourceView(element, calendar, viewName) {
 			html +=
 				"<th class='" + headerClass +
 					(date.getDay() === 0 || date.getDay() === 6 ? ' fc-weekend' : '') +
-				"'>" +
-				(showWeekNumbers && (viewName === 'resourceNextWeeks' || viewName === 'resourceMonth') && 
+				"' data-date='" + formatDate(date, 'yyyy-MM-dd') + "'>" +
+				(showWeekNumbers && (viewName === 'resourceNextWeeks' || viewName === 'resourceMonth') &&
 					date.getDay() === 1 ? "#" + formatDate(date, weekNumberFormat) + "<br>" : "") + 
 				htmlEscape(formatDate(date, colFormat)) +
 				"</th>";
